@@ -7,7 +7,7 @@ import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-// Force dynamic rendering
+// Force dynamic rendering for this page
 export const dynamic = 'force-dynamic';
 
 const TeacherPage = async ({

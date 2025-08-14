@@ -1,5 +1,8 @@
 import { getUserSession } from "@/lib/auth";
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
+
 const TestAuthPage = async () => {
   const session = await getUserSession();
   

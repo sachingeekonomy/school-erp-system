@@ -4,6 +4,9 @@ import prisma from "@/lib/prisma";
 import Image from "next/image";
 import ProfileEditForm from "@/components/ProfileEditForm";
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
+
 const ProfilePage = async () => {
   // Get user role and current user
   const role = await getUserRoleSync();

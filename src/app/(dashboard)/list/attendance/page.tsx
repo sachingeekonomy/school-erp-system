@@ -11,6 +11,9 @@ import Image from "next/image";
 import { getUserRoleSync } from "@/lib/getUserRole";
 import { getUserSession } from "@/lib/auth";
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
+
 type AttendanceList = {
   id: number;
   studentId: string;

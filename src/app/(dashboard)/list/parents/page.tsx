@@ -10,6 +10,9 @@ import { Parent, Prisma, Student } from "@prisma/client";
 import Image from "next/image";
 import { getUserSession } from "@/lib/auth";
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
+
 type ParentList = Parent & { students: Student[] };
 
 const ParentListPage = async ({

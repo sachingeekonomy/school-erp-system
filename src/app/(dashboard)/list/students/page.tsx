@@ -13,6 +13,9 @@ import Link from "next/link";
 
 import { getUserSession } from "@/lib/auth";
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
+
 type StudentList = Student & { class: Class };
 
 const StudentListPage = async ({

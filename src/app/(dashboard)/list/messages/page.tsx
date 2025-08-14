@@ -13,6 +13,9 @@ import { getUserRoleSync } from "@/lib/getUserRole";
 import { getUserSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
+
 type MessageList = {
   id: number;
   title: string;

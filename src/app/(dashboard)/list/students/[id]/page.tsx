@@ -9,6 +9,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
+
 const SingleStudentPage = async ({
   params: { id },
 }: {

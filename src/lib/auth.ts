@@ -17,10 +17,24 @@ export async function getUserSession(): Promise<UserSession | null> {
       return null;
     }
 
-    const sessionData = JSON.parse(sessionCookie.value) as UserSession;
+    // Add better error handling for malformed JSON
+    let sessionData: UserSession;
+    try {
+      sessionData = JSON.parse(sessionCookie.value) as UserSession;
+    } catch (parseError) {
+      console.error('Error parsing session JSON:', parseError);
+      return null;
+    }
+
+    // Validate session data structure
+    if (!sessionData.id || !sessionData.role || !sessionData.username) {
+      console.error('Invalid session data structure:', sessionData);
+      return null;
+    }
+
     return sessionData;
   } catch (error) {
-    console.error('Error parsing session:', error);
+    console.error('Error getting user session:', error);
     return null;
   }
 }

@@ -6,11 +6,14 @@ import SortDropdown from "@/components/SortDropdown";
 import FilterDropdown from "@/components/FilterDropdown";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
-import { Prisma } from "@prisma/client";
+import { Result, Class, Prisma, Subject, Student, Teacher } from "@prisma/client";
 import Image from "next/image";
 
 import { getUserRoleSync } from "@/lib/getUserRole";
 import { getUserSession } from "@/lib/auth";
+
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
 
 type ResultList = {
   id: number;

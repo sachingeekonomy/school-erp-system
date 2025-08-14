@@ -12,6 +12,9 @@ import Link from "next/link";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { getUserSession } from "@/lib/auth";
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
+
 type TeacherList = Teacher & { subjects: Subject[] } & { classes: Class[] };
 
 const TeacherListPage = async ({

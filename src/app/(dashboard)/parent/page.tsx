@@ -8,7 +8,7 @@ import Link from "next/link";
 
 import { Users, Calendar, CreditCard, BookOpen, GraduationCap } from "lucide-react";
 
-// Force dynamic rendering
+// Force dynamic rendering for this page
 export const dynamic = 'force-dynamic';
 
 const ParentPage = async () => {

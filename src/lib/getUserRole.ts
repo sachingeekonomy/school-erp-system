@@ -18,13 +18,19 @@ export async function getUserRole(): Promise<string | null> {
 }
 
 export async function getUserRoleSync(): Promise<string> {
-  const role = await getUserRole();
-  if (!role) {
-    console.warn('No role found in session, this should not happen in a properly authenticated user');
+  try {
+    const role = await getUserRole();
+    if (!role) {
+      console.warn('No role found in session, this should not happen in a properly authenticated user');
+      // Return a safe default that has minimal access
+      return 'student';
+    }
+    return role;
+  } catch (error) {
+    console.error('Error in getUserRoleSync:', error);
     // Return a safe default that has minimal access
     return 'student';
   }
-  return role;
 }
 
 export async function getCurrentUser() {

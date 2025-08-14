@@ -7,7 +7,7 @@ import { getUserSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { GraduationCap, Calendar, CreditCard, BookOpen } from "lucide-react";
 
-// Force dynamic rendering
+// Force dynamic rendering for this page
 export const dynamic = 'force-dynamic';
 
 const StudentPage = async () => {

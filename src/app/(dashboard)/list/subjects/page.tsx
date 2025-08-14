@@ -6,9 +6,12 @@ import SortDropdown from "@/components/SortDropdown";
 import FilterDropdown from "@/components/FilterDropdown";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
-import { Prisma, Subject, Teacher } from "@prisma/client";
+import { Subject, Prisma } from "@prisma/client";
 import Image from "next/image";
 import { getUserSession } from "@/lib/auth";
+
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
 
 type SubjectList = Subject & { teachers: Teacher[] };
 

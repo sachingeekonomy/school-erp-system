@@ -76,6 +76,42 @@ docker compose logs -f app
 - **Database**: localhost:5432
 - **Prisma Studio**: Run `npx prisma studio` (if running locally)
 
+## 🚀 Deployment
+
+### Vercel Deployment
+
+This project is configured for easy deployment on Vercel. Follow these steps:
+
+1. **Connect to Vercel**
+   - Push your code to GitHub
+   - Connect your repository to Vercel
+   - Vercel will automatically detect the Next.js framework
+
+2. **Environment Variables**
+   Set the following environment variables in your Vercel project settings:
+   ```
+   DATABASE_URL=your_production_database_url
+   NEXTAUTH_SECRET=your_nextauth_secret
+   NEXTAUTH_URL=https://your-domain.vercel.app
+   RAZORPAY_KEY_ID=your_razorpay_key_id
+   RAZORPAY_KEY_SECRET=your_razorpay_key_secret
+   ```
+
+3. **Database Setup**
+   - Use a PostgreSQL database (Vercel Postgres, Supabase, or any PostgreSQL provider)
+   - Run migrations: `npx prisma migrate deploy`
+   - Generate Prisma client: `npx prisma generate`
+
+4. **Build Configuration**
+   - The project includes `vercel.json` for optimal build settings
+   - Prisma client is automatically generated during build
+
+### Other Deployment Options
+
+- **Docker**: Use the provided `Dockerfile` and `docker-compose.yml`
+- **Railway**: Similar to Vercel, supports PostgreSQL
+- **Netlify**: Requires serverless functions for API routes
+
 ## 📁 Project Structure
 
 ```

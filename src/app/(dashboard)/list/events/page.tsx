@@ -6,7 +6,7 @@ import SortDropdown from "@/components/SortDropdown";
 import FilterDropdown from "@/components/FilterDropdown";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
-import { Event, Prisma } from "@prisma/client";
+import { Event, Prisma, Class } from "@prisma/client";
 import Image from "next/image";
 import { getUserRoleSync } from "@/lib/getUserRole";
 import { getUserSession } from "@/lib/auth";

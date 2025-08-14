@@ -10,6 +10,9 @@ import { Class, Prisma, Teacher } from "@prisma/client";
 import Image from "next/image";
 import { getUserRoleSync } from "@/lib/getUserRole";
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
+
 type ClassList = Class & { supervisor: Teacher; grade: { level: number } };
 
 const ClassListPage = async ({

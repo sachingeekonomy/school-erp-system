@@ -7,8 +7,8 @@ async function testDatabase() {
     });
     const data = await response.json();
     return data;
-  } catch (error) {
-    return { success: false, error: error.message };
+  } catch (error: any) {
+    return { success: false, error: error.message || 'Unknown error' };
   }
 }
 

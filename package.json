@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seed.js",
+    "fix-db": "node prisma/fix-user-table.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

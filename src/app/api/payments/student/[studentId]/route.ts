@@ -36,21 +36,25 @@ export async function GET(
     }
 
     // Check if user has permission to view this student's payments
-    // First try to find user in the User model (new system)
-    let user = await prisma.user.findUnique({
-      where: { id: userId },
-    });
-
+    // Skip User model lookup for now due to schema mismatch
     let canView = false;
     
-    if (user) {
-      console.log("User found in new system, role:", user.role);
-      // User found in new system
-      if (user.role === "ADMIN") {
-        canView = true;
-      } else if (user.role === "STUDENT") {
-        canView = params.studentId === userId;
-      } else if (user.role === "PARENT") {
+    // Try legacy system - check if user is a student
+    const student = await prisma.student.findUnique({
+      where: { id: userId },
+    });
+    
+    if (student) {
+      console.log("User found as student in legacy system");
+      canView = params.studentId === userId;
+    } else {
+      // Check if user is a parent
+      const parent = await prisma.parent.findUnique({
+        where: { id: userId },
+      });
+      
+      if (parent) {
+        console.log("User found as parent in legacy system");
         // Check if the student belongs to this parent
         const student = await prisma.student.findFirst({
           where: {
@@ -59,43 +63,15 @@ export async function GET(
           },
         });
         canView = !!student;
-      }
-    } else {
-      console.log("User not found in new system, checking legacy system...");
-      // Try legacy system - check if user is a student
-      const student = await prisma.student.findUnique({
-        where: { id: userId },
-      });
-      
-      if (student) {
-        console.log("User found as student in legacy system");
-        canView = params.studentId === userId;
       } else {
-        // Check if user is a parent
-        const parent = await prisma.parent.findUnique({
+        // Check if user is an admin
+        const admin = await prisma.admin.findUnique({
           where: { id: userId },
         });
         
-        if (parent) {
-          console.log("User found as parent in legacy system");
-          // Check if the student belongs to this parent
-          const student = await prisma.student.findFirst({
-            where: {
-              id: params.studentId,
-              parentId: userId,
-            },
-          });
-          canView = !!student;
-        } else {
-          // Check if user is an admin
-          const admin = await prisma.admin.findUnique({
-            where: { id: userId },
-          });
-          
-          if (admin) {
-            console.log("User found as admin in legacy system");
-            canView = true;
-          }
+        if (admin) {
+          console.log("User found as admin in legacy system");
+          canView = true;
         }
       }
     }

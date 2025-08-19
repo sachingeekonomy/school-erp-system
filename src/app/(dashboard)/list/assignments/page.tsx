@@ -142,12 +142,46 @@ const AssignmentListPage = async ({
 
   query.lesson = {};
 
+  // Handle sorting
+  let orderBy: any = { id: 'asc' }; // Default sorting
+  
+  const { sort, order } = queryParams;
+  if (sort && order) {
+    switch (sort) {
+      case 'title':
+        orderBy = { title: order };
+        break;
+      case 'startDate':
+        orderBy = { startDate: order };
+        break;
+      case 'dueDate':
+        orderBy = { dueDate: order };
+        break;
+      case 'subject':
+        orderBy = { lesson: { subject: { name: order } } };
+        break;
+      case 'class':
+        orderBy = { lesson: { class: { name: order } } };
+        break;
+      case 'teacher':
+        orderBy = { lesson: { teacher: { name: order } } };
+        break;
+      default:
+        orderBy = { id: order };
+        break;
+    }
+  }
+
+  // Handle filters and search
   if (queryParams) {
     for (const [key, value] of Object.entries(queryParams)) {
       if (value !== undefined) {
         switch (key) {
           case "classId":
             query.lesson.classId = parseInt(value);
+            break;
+          case "subjectId":
+            query.lesson.subjectId = parseInt(value);
             break;
           case "teacherId":
             query.lesson.teacherId = value;
@@ -198,7 +232,7 @@ const AssignmentListPage = async ({
       break;
   }
 
-  const [data, count] = await prisma.$transaction([
+  const [data, count, classes, subjects, teachers] = await prisma.$transaction([
     prisma.assignment.findMany({
       where: query,
       include: {
@@ -210,11 +244,69 @@ const AssignmentListPage = async ({
           },
         },
       },
+      orderBy,
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
     prisma.assignment.count({ where: query }),
+    prisma.class.findMany({
+      orderBy: { name: 'asc' },
+    }),
+    prisma.subject.findMany({
+      orderBy: { name: 'asc' },
+    }),
+    prisma.teacher.findMany({
+      orderBy: { name: 'asc' },
+    }),
   ]);
+
+  // Sort options for assignments
+  const sortOptions = [
+    { value: "title-asc", label: "Title (A-Z)", field: "title", direction: "asc" as const },
+    { value: "title-desc", label: "Title (Z-A)", field: "title", direction: "desc" as const },
+    { value: "startDate-asc", label: "Start Date (Oldest First)", field: "startDate", direction: "asc" as const },
+    { value: "startDate-desc", label: "Start Date (Newest First)", field: "startDate", direction: "desc" as const },
+    { value: "dueDate-asc", label: "Due Date (Oldest First)", field: "dueDate", direction: "asc" as const },
+    { value: "dueDate-desc", label: "Due Date (Newest First)", field: "dueDate", direction: "desc" as const },
+    { value: "subject-asc", label: "Subject (A-Z)", field: "subject", direction: "asc" as const },
+    { value: "subject-desc", label: "Subject (Z-A)", field: "subject", direction: "desc" as const },
+    { value: "class-asc", label: "Class (A-Z)", field: "class", direction: "asc" as const },
+    { value: "class-desc", label: "Class (Z-A)", field: "class", direction: "desc" as const },
+    { value: "teacher-asc", label: "Teacher (A-Z)", field: "teacher", direction: "asc" as const },
+    { value: "teacher-desc", label: "Teacher (Z-A)", field: "teacher", direction: "desc" as const },
+  ];
+
+  // Filter options for assignments
+  const filterGroups = [
+    {
+      title: "Class",
+      param: "classId",
+      options: classes.map(cls => ({
+        value: cls.id.toString(),
+        label: cls.name,
+        param: "classId"
+      }))
+    },
+    {
+      title: "Subject",
+      param: "subjectId",
+      options: subjects.map(subject => ({
+        value: subject.id.toString(),
+        label: subject.name,
+        param: "subjectId"
+      }))
+    },
+    {
+      title: "Teacher",
+      param: "teacherId",
+      options: teachers.map(teacher => ({
+        value: teacher.id,
+        label: `${teacher.name} ${teacher.surname}`,
+        param: "teacherId"
+      }))
+    }
+  ];
+
   return (
     <div className="bg-white p-4 flex-1  w-full h-full">
       {/* TOP */}
@@ -226,12 +318,8 @@ const AssignmentListPage = async ({
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/sort.png" alt="" width={14} height={14} />
-            </button>
+            <FilterDropdown groups={filterGroups} />
+            <SortDropdown options={sortOptions} />
             {role === "admin" || role === "teacher" ? (
               <div className="flex items-center gap-2">
                 <FormContainer table="assignment" type="create" />

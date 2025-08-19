@@ -141,6 +141,37 @@ const AttendanceListPage = async ({
 
   const query: Prisma.AttendanceWhereInput = {};
 
+  // Handle sorting
+  let orderBy: any = { id: 'desc' }; // Default sorting
+  
+  const { sort, order } = queryParams;
+  if (sort && order) {
+    switch (sort) {
+      case 'date':
+        orderBy = { date: order };
+        break;
+      case 'student':
+        orderBy = { student: { name: order } };
+        break;
+      case 'lesson':
+        orderBy = { lesson: { name: order } };
+        break;
+      case 'present':
+        orderBy = { present: order };
+        break;
+      case 'class':
+        orderBy = { student: { class: { name: order } } };
+        break;
+      case 'teacher':
+        orderBy = { lesson: { teacher: { name: order } } };
+        break;
+      default:
+        orderBy = { id: order };
+        break;
+    }
+  }
+
+  // Handle filters and search
   if (queryParams) {
     for (const [key, value] of Object.entries(queryParams)) {
       if (value !== undefined) {
@@ -150,6 +181,19 @@ const AttendanceListPage = async ({
             break;
           case "lessonId":
             query.lessonId = parseInt(value);
+            break;
+          case "classId":
+            query.student = {
+              classId: parseInt(value)
+            };
+            break;
+          case "teacherId":
+            query.lesson = {
+              teacherId: value
+            };
+            break;
+          case "present":
+            query.present = value === "true";
             break;
           case "search":
             query.OR = [
@@ -188,7 +232,7 @@ const AttendanceListPage = async ({
       break;
   }
 
-  const [dataRes, count] = await prisma.$transaction([
+  const [dataRes, count, students, lessons, classes, teachers] = await prisma.$transaction([
     prisma.attendance.findMany({
       where: query,
       include: {
@@ -212,9 +256,27 @@ const AttendanceListPage = async ({
       },
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
-      orderBy: { id: 'desc' },
+      orderBy,
     }),
     prisma.attendance.count({ where: query }),
+    prisma.student.findMany({
+      include: { class: true },
+      orderBy: { name: 'asc' },
+    }),
+    prisma.lesson.findMany({
+      include: { 
+        teacher: true,
+        class: true,
+        subject: true
+      },
+      orderBy: { name: 'asc' },
+    }),
+    prisma.class.findMany({
+      orderBy: { name: 'asc' },
+    }),
+    prisma.teacher.findMany({
+      orderBy: { name: 'asc' },
+    }),
   ]);
 
   const data = dataRes.map((item) => ({
@@ -232,6 +294,70 @@ const AttendanceListPage = async ({
     date: item.date || new Date(),
   }));
 
+  // Sort options for attendance
+  const sortOptions = [
+    { value: "date-asc", label: "Date (Oldest First)", field: "date", direction: "asc" as const },
+    { value: "date-desc", label: "Date (Newest First)", field: "date", direction: "desc" as const },
+    { value: "student-asc", label: "Student (A-Z)", field: "student", direction: "asc" as const },
+    { value: "student-desc", label: "Student (Z-A)", field: "student", direction: "desc" as const },
+    { value: "lesson-asc", label: "Lesson (A-Z)", field: "lesson", direction: "asc" as const },
+    { value: "lesson-desc", label: "Lesson (Z-A)", field: "lesson", direction: "desc" as const },
+    { value: "present-asc", label: "Status (Absent First)", field: "present", direction: "asc" as const },
+    { value: "present-desc", label: "Status (Present First)", field: "present", direction: "desc" as const },
+    { value: "class-asc", label: "Class (A-Z)", field: "class", direction: "asc" as const },
+    { value: "class-desc", label: "Class (Z-A)", field: "class", direction: "desc" as const },
+    { value: "teacher-asc", label: "Teacher (A-Z)", field: "teacher", direction: "asc" as const },
+    { value: "teacher-desc", label: "Teacher (Z-A)", field: "teacher", direction: "desc" as const },
+  ];
+
+  // Filter options for attendance
+  const filterGroups = [
+    {
+      title: "Student",
+      param: "studentId",
+      options: students.map(student => ({
+        value: student.id,
+        label: `${student.name} ${student.surname} - ${student.class.name}`,
+        param: "studentId"
+      }))
+    },
+    {
+      title: "Lesson",
+      param: "lessonId",
+      options: lessons.map(lesson => ({
+        value: lesson.id.toString(),
+        label: `${lesson.name} - ${lesson.subject.name} - ${lesson.class.name}`,
+        param: "lessonId"
+      }))
+    },
+    {
+      title: "Class",
+      param: "classId",
+      options: classes.map(cls => ({
+        value: cls.id.toString(),
+        label: cls.name,
+        param: "classId"
+      }))
+    },
+    {
+      title: "Teacher",
+      param: "teacherId",
+      options: teachers.map(teacher => ({
+        value: teacher.id,
+        label: `${teacher.name} ${teacher.surname}`,
+        param: "teacherId"
+      }))
+    },
+    {
+      title: "Status",
+      param: "present",
+      options: [
+        { value: "true", label: "Present", param: "present" },
+        { value: "false", label: "Absent", param: "present" }
+      ]
+    }
+  ];
+
   return (
     <div className="bg-white p-4 flex-1  w-full h-full">
       {/* TOP */}
@@ -242,11 +368,8 @@ const AttendanceListPage = async ({
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <FilterDropdown groups={[]} />
-            <SortDropdown options={[
-              { value: "date-asc", label: "Date (Old-New)", field: "date", direction: "asc" },
-              { value: "date-desc", label: "Date (New-Old)", field: "date", direction: "desc" }
-            ]} />
+            <FilterDropdown groups={filterGroups} />
+            <SortDropdown options={sortOptions} />
             {role === "admin" || role === "teacher" ? (
               <div className="flex items-center gap-2">
                 <FormContainer table="attendance" type="create" />

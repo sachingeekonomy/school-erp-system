@@ -27,9 +27,32 @@ const ResultForm = ({
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
+    reset,
   } = useForm<ResultSchema>({
     resolver: zodResolver(resultSchema),
+    defaultValues: {
+      score: data?.score || "",
+      studentId: data?.studentId || "",
+      examId: data?.examId || "",
+      assignmentId: data?.assignmentId || "",
+      id: data?.id || "",
+    },
   });
+
+  // Set form values when data changes (for update mode)
+  useEffect(() => {
+    if (type === "update" && data) {
+      console.log("ResultForm received data:", data);
+      reset({
+        score: data.score || "",
+        studentId: data.studentId || "",
+        examId: data.examId || "",
+        assignmentId: data.assignmentId || "",
+        id: data.id || "",
+      });
+    }
+  }, [data, type, reset]);
 
   const [state, formAction] = useFormState(
     type === "create" ? createResult : updateResult,
@@ -73,7 +96,6 @@ const ResultForm = ({
               type="number"
               min="0"
               max="100"
-              defaultValue={data?.score} 
               register={register} 
               error={errors.score} 
             />
@@ -82,7 +104,6 @@ const ResultForm = ({
               <select 
                 className="ring-[1.5px] ring-gray-300 p-3 rounded-md text-sm w-full" 
                 {...register("studentId")} 
-                defaultValue={data?.studentId}
               >
                 <option value="">Select a student</option>
                 {students?.map((student: { id: string; name: string; surname: string; class: { name: string } }) => (
@@ -106,7 +127,6 @@ const ResultForm = ({
               <select 
                 className="ring-[1.5px] ring-gray-300 p-3 rounded-md text-sm w-full" 
                 {...register("examId")} 
-                defaultValue={data?.examId || ""}
               >
                 <option value="">Select an exam (optional)</option>
                 {exams?.map((exam: { id: number; title: string; lesson: { subject: { name: string }; class: { name: string } } }) => (
@@ -124,7 +144,6 @@ const ResultForm = ({
               <select 
                 className="ring-[1.5px] ring-gray-300 p-3 rounded-md text-sm w-full" 
                 {...register("assignmentId")} 
-                defaultValue={data?.assignmentId || ""}
               >
                 <option value="">Select an assignment (optional)</option>
                 {assignments?.map((assignment: { id: number; title: string; lesson: { subject: { name: string }; class: { name: string } } }) => (
@@ -147,7 +166,6 @@ const ResultForm = ({
           <InputField 
             label="Id" 
             name="id" 
-            defaultValue={data?.id} 
             register={register} 
             error={errors?.id} 
             hidden 

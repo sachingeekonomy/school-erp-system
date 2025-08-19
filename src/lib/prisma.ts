@@ -1,9 +1,14 @@
 import { PrismaClient } from '@prisma/client'
 
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined
+}
+
 const prismaClientSingleton = () => {
   const databaseUrl = process.env.DATABASE_URL;
   
   if (!databaseUrl) {
+    console.error('DATABASE_URL environment variable is not set');
     throw new Error('DATABASE_URL environment variable is not set');
   }
   
@@ -15,15 +20,12 @@ const prismaClientSingleton = () => {
         url: databaseUrl,
       },
     },
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   });
 }
 
-declare const globalThis: {
-  prismaGlobal: ReturnType<typeof prismaClientSingleton>;
-} & typeof global;
+const prisma = globalForPrisma.prisma ?? prismaClientSingleton()
 
-const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
 export default prisma
-
-if (process.env.NODE_ENV !== 'production') globalThis.prismaGlobal = prisma

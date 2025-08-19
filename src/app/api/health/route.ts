@@ -1,54 +1,91 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   try {
-    // Check if DATABASE_URL is set
-    const databaseUrl = process.env.DATABASE_URL;
-    if (!databaseUrl) {
-      return NextResponse.json(
-        { 
-          status: 'error',
-          message: 'DATABASE_URL environment variable is not set',
-          timestamp: new Date().toISOString()
-        },
-        { status: 500 }
-      );
-    }
-
+    console.log("=== Health Check Started ===");
+    
+    // Check environment variables
+    const envCheck = {
+      DATABASE_URL: !!process.env.DATABASE_URL,
+      NODE_ENV: process.env.NODE_ENV,
+      RAILWAY_ENVIRONMENT: process.env.RAILWAY_ENVIRONMENT,
+    };
+    
+    console.log("Environment check:", envCheck);
+    
     // Test database connection
-    await prisma.$connect();
+    let dbStatus = "unknown";
+    try {
+      await prisma.$connect();
+      dbStatus = "connected";
+      console.log("✅ Database connection successful");
+    } catch (dbError) {
+      dbStatus = "failed";
+      console.error("❌ Database connection failed:", dbError);
+    }
     
-    // Try a simple query
-    const adminCount = await prisma.admin.count();
+    // Test basic database operations
+    let dbOperations = "unknown";
+    try {
+      // Test a simple query
+      const adminCount = await prisma.admin.count();
+      const studentCount = await prisma.student.count();
+      const paymentCount = await prisma.payment.count();
+      
+      dbOperations = "working";
+      console.log("✅ Database operations successful");
+      console.log("Counts:", { adminCount, studentCount, paymentCount });
+    } catch (opError) {
+      dbOperations = "failed";
+      console.error("❌ Database operations failed:", opError);
+    }
     
-    return NextResponse.json(
-      { 
-        status: 'healthy',
-        message: 'Database connection successful',
-        databaseUrl: databaseUrl ? `${databaseUrl.split('@')[1]?.split('/')[0] || 'hidden'}` : 'not set',
-        adminCount,
-        timestamp: new Date().toISOString()
+    // Check Prisma client
+    let prismaStatus = "unknown";
+    try {
+      // Test if Prisma client is properly generated
+      const models = Object.keys(prisma);
+      prismaStatus = "generated";
+      console.log("✅ Prisma client models:", models);
+    } catch (prismaError) {
+      prismaStatus = "failed";
+      console.error("❌ Prisma client check failed:", prismaError);
+    }
+    
+    const healthStatus = {
+      status: "healthy",
+      timestamp: new Date().toISOString(),
+      environment: envCheck,
+      database: {
+        connection: dbStatus,
+        operations: dbOperations,
+        prisma: prismaStatus,
       },
-      { status: 200 }
-    );
-
+    };
+    
+    console.log("=== Health Check Completed ===");
+    console.log("Health status:", healthStatus);
+    
+    return NextResponse.json(healthStatus);
+    
   } catch (error) {
-    console.error('Health check error:', error);
+    console.error("=== Health Check Failed ===");
+    console.error("Error:", error);
     
     return NextResponse.json(
-      { 
-        status: 'error',
-        message: 'Database connection failed',
+      {
+        status: "unhealthy",
+        timestamp: new Date().toISOString(),
         error: error instanceof Error ? error.message : String(error),
-        databaseUrl: process.env.DATABASE_URL ? `${process.env.DATABASE_URL.split('@')[1]?.split('/')[0] || 'hidden'}` : 'not set',
-        timestamp: new Date().toISOString()
       },
       { status: 500 }
     );
   } finally {
-    await prisma.$disconnect();
+    try {
+      await prisma.$disconnect();
+    } catch (disconnectError) {
+      console.error("Error disconnecting from database:", disconnectError);
+    }
   }
 }

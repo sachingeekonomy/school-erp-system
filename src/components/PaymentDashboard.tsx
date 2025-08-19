@@ -75,6 +75,7 @@ const PaymentDashboard = ({ studentId, userRole }: PaymentDashboardProps) => {
         toast.error(errorData.error || "Failed to fetch payments");
       }
     } catch (error) {
+      console.log("Error>>>",error)
       console.error("Payment fetch error:", error);
       toast.error("Failed to fetch payments");
     } finally {

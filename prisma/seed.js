@@ -1,4 +1,4 @@
-import { Day, PrismaClient, UserSex, PaymentType, PaymentMethod, PaymentStatus, UserRole } from "@prisma/client";
+const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 async function main() {
@@ -107,16 +107,16 @@ async function main() {
   // 5. TEACHER (10 records) - Indian Names
   console.log("Creating teachers...");
   const teacherData = [
-    { id: "teacher1", username: "teacher1", name: "Rajesh", surname: "Kumar", email: "rajesh.kumar@school.com", phone: "9876543210", address: "123 MG Road, Bangalore", bloodType: "A+", sex: UserSex.MALE },
-    { id: "teacher2", username: "teacher2", name: "Priya", surname: "Sharma", email: "priya.sharma@school.com", phone: "9876543211", address: "456 Indira Nagar, Delhi", bloodType: "B+", sex: UserSex.FEMALE },
-    { id: "teacher3", username: "teacher3", name: "Amit", surname: "Patel", email: "amit.patel@school.com", phone: "9876543212", address: "789 Andheri West, Mumbai", bloodType: "O+", sex: UserSex.MALE },
-    { id: "teacher4", username: "teacher4", name: "Neha", surname: "Singh", email: "neha.singh@school.com", phone: "9876543213", address: "321 Koramangala, Bangalore", bloodType: "AB+", sex: UserSex.FEMALE },
-    { id: "teacher5", username: "teacher5", name: "Vikram", surname: "Malhotra", email: "vikram.malhotra@school.com", phone: "9876543214", address: "654 Bandra East, Mumbai", bloodType: "A-", sex: UserSex.MALE },
-    { id: "teacher6", username: "teacher6", name: "Anjali", surname: "Gupta", email: "anjali.gupta@school.com", phone: "9876543215", address: "987 Defence Colony, Delhi", bloodType: "B-", sex: UserSex.FEMALE },
-    { id: "teacher7", username: "teacher7", name: "Suresh", surname: "Reddy", email: "suresh.reddy@school.com", phone: "9876543216", address: "147 Banjara Hills, Hyderabad", bloodType: "O-", sex: UserSex.MALE },
-    { id: "teacher8", username: "teacher8", name: "Kavita", surname: "Verma", email: "kavita.verma@school.com", phone: "9876543217", address: "258 Vasant Vihar, Delhi", bloodType: "AB-", sex: UserSex.FEMALE },
-    { id: "teacher9", username: "teacher9", name: "Arun", surname: "Joshi", email: "arun.joshi@school.com", phone: "9876543218", address: "369 JP Nagar, Bangalore", bloodType: "A+", sex: UserSex.MALE },
-    { id: "teacher10", username: "teacher10", name: "Meera", surname: "Kapoor", email: "meera.kapoor@school.com", phone: "9876543219", address: "741 Powai, Mumbai", bloodType: "B+", sex: UserSex.FEMALE },
+    { id: "teacher1", username: "teacher1", name: "Rajesh", surname: "Kumar", email: "rajesh.kumar@school.com", phone: "9876543210", address: "123 MG Road, Bangalore", bloodType: "A+", sex: "MALE" },
+    { id: "teacher2", username: "teacher2", name: "Priya", surname: "Sharma", email: "priya.sharma@school.com", phone: "9876543211", address: "456 Indira Nagar, Delhi", bloodType: "B+", sex: "FEMALE" },
+    { id: "teacher3", username: "teacher3", name: "Amit", surname: "Patel", email: "amit.patel@school.com", phone: "9876543212", address: "789 Andheri West, Mumbai", bloodType: "O+", sex: "MALE" },
+    { id: "teacher4", username: "teacher4", name: "Neha", surname: "Singh", email: "neha.singh@school.com", phone: "9876543213", address: "321 Koramangala, Bangalore", bloodType: "AB+", sex: "FEMALE" },
+    { id: "teacher5", username: "teacher5", name: "Vikram", surname: "Malhotra", email: "vikram.malhotra@school.com", phone: "9876543214", address: "654 Bandra East, Mumbai", bloodType: "A-", sex: "MALE" },
+    { id: "teacher6", username: "teacher6", name: "Anjali", surname: "Gupta", email: "anjali.gupta@school.com", phone: "9876543215", address: "987 Defence Colony, Delhi", bloodType: "B-", sex: "FEMALE" },
+    { id: "teacher7", username: "teacher7", name: "Suresh", surname: "Reddy", email: "suresh.reddy@school.com", phone: "9876543216", address: "147 Banjara Hills, Hyderabad", bloodType: "O-", sex: "MALE" },
+    { id: "teacher8", username: "teacher8", name: "Kavita", surname: "Verma", email: "kavita.verma@school.com", phone: "9876543217", address: "258 Vasant Vihar, Delhi", bloodType: "AB-", sex: "FEMALE" },
+    { id: "teacher9", username: "teacher9", name: "Arun", surname: "Joshi", email: "arun.joshi@school.com", phone: "9876543218", address: "369 JP Nagar, Bangalore", bloodType: "A+", sex: "MALE" },
+    { id: "teacher10", username: "teacher10", name: "Meera", surname: "Kapoor", email: "meera.kapoor@school.com", phone: "9876543219", address: "741 Powai, Mumbai", bloodType: "B+", sex: "FEMALE" },
   ];
 
   for (const teacher of teacherData) {
@@ -165,16 +165,16 @@ async function main() {
   // 7. STUDENT (10 records) - Indian Names
   console.log("Creating students...");
   const studentData = [
-    { id: "student1", username: "student1", name: "Aditya", surname: "Kumar", email: "aditya.kumar@student.com", phone: "7654321098", address: "101 MG Road, Bangalore", bloodType: "A+", sex: UserSex.MALE, parentId: "parent1", gradeId: 1, classId: 1 },
-    { id: "student2", username: "student2", name: "Aisha", surname: "Sharma", email: "aisha.sharma@student.com", phone: "7654321097", address: "102 Indira Nagar, Delhi", bloodType: "B+", sex: UserSex.FEMALE, parentId: "parent2", gradeId: 1, classId: 2 },
-    { id: "student3", username: "student3", name: "Rahul", surname: "Patel", email: "rahul.patel@student.com", phone: "7654321096", address: "103 Andheri West, Mumbai", bloodType: "O+", sex: UserSex.MALE, parentId: "parent3", gradeId: 2, classId: 3 },
-    { id: "student4", username: "student4", name: "Zara", surname: "Singh", email: "zara.singh@student.com", phone: "7654321095", address: "104 Koramangala, Bangalore", bloodType: "AB+", sex: UserSex.FEMALE, parentId: "parent4", gradeId: 2, classId: 4 },
-    { id: "student5", username: "student5", name: "Vivaan", surname: "Malhotra", email: "vivaan.malhotra@student.com", phone: "7654321094", address: "105 Bandra East, Mumbai", bloodType: "A-", sex: UserSex.MALE, parentId: "parent5", gradeId: 3, classId: 5 },
-    { id: "student6", username: "student6", name: "Diya", surname: "Gupta", email: "diya.gupta@student.com", phone: "7654321093", address: "106 Defence Colony, Delhi", bloodType: "B-", sex: UserSex.FEMALE, parentId: "parent6", gradeId: 3, classId: 6 },
-    { id: "student7", username: "student7", name: "Arjun", surname: "Reddy", email: "arjun.reddy@student.com", phone: "7654321092", address: "107 Banjara Hills, Hyderabad", bloodType: "O-", sex: UserSex.MALE, parentId: "parent7", gradeId: 4, classId: 7 },
-    { id: "student8", username: "student8", name: "Kiara", surname: "Verma", email: "kiara.verma@student.com", phone: "7654321091", address: "108 Vasant Vihar, Delhi", bloodType: "AB-", sex: UserSex.FEMALE, parentId: "parent8", gradeId: 4, classId: 8 },
-    { id: "student9", username: "student9", name: "Shaurya", surname: "Joshi", email: "shaurya.joshi@student.com", phone: "7654321090", address: "109 JP Nagar, Bangalore", bloodType: "A+", sex: UserSex.MALE, parentId: "parent9", gradeId: 5, classId: 9 },
-    { id: "student10", username: "student10", name: "Anaya", surname: "Kapoor", email: "anaya.kapoor@student.com", phone: "7654321089", address: "110 Powai, Mumbai", bloodType: "B+", sex: UserSex.FEMALE, parentId: "parent10", gradeId: 5, classId: 10 },
+    { id: "student1", username: "student1", name: "Aditya", surname: "Kumar", email: "aditya.kumar@student.com", phone: "7654321098", address: "101 MG Road, Bangalore", bloodType: "A+", sex: "MALE", parentId: "parent1", gradeId: 1, classId: 1 },
+    { id: "student2", username: "student2", name: "Aisha", surname: "Sharma", email: "aisha.sharma@student.com", phone: "7654321097", address: "102 Indira Nagar, Delhi", bloodType: "B+", sex: "FEMALE", parentId: "parent2", gradeId: 1, classId: 2 },
+    { id: "student3", username: "student3", name: "Rahul", surname: "Patel", email: "rahul.patel@student.com", phone: "7654321096", address: "103 Andheri West, Mumbai", bloodType: "O+", sex: "MALE", parentId: "parent3", gradeId: 2, classId: 3 },
+    { id: "student4", username: "student4", name: "Zara", surname: "Singh", email: "zara.singh@student.com", phone: "7654321095", address: "104 Koramangala, Bangalore", bloodType: "AB+", sex: "FEMALE", parentId: "parent4", gradeId: 2, classId: 4 },
+    { id: "student5", username: "student5", name: "Vivaan", surname: "Malhotra", email: "vivaan.malhotra@student.com", phone: "7654321094", address: "105 Bandra East, Mumbai", bloodType: "A-", sex: "MALE", parentId: "parent5", gradeId: 3, classId: 5 },
+    { id: "student6", username: "student6", name: "Diya", surname: "Gupta", email: "diya.gupta@student.com", phone: "7654321093", address: "106 Defence Colony, Delhi", bloodType: "B-", sex: "FEMALE", parentId: "parent6", gradeId: 3, classId: 6 },
+    { id: "student7", username: "student7", name: "Arjun", surname: "Reddy", email: "arjun.reddy@student.com", phone: "7654321092", address: "107 Banjara Hills, Hyderabad", bloodType: "O-", sex: "MALE", parentId: "parent7", gradeId: 4, classId: 7 },
+    { id: "student8", username: "student8", name: "Kiara", surname: "Verma", email: "kiara.verma@student.com", phone: "7654321091", address: "108 Vasant Vihar, Delhi", bloodType: "AB-", sex: "FEMALE", parentId: "parent8", gradeId: 4, classId: 8 },
+    { id: "student9", username: "student9", name: "Shaurya", surname: "Joshi", email: "shaurya.joshi@student.com", phone: "7654321090", address: "109 JP Nagar, Bangalore", bloodType: "A+", sex: "MALE", parentId: "parent9", gradeId: 5, classId: 9 },
+    { id: "student10", username: "student10", name: "Anaya", surname: "Kapoor", email: "anaya.kapoor@student.com", phone: "7654321089", address: "110 Powai, Mumbai", bloodType: "B+", sex: "FEMALE", parentId: "parent10", gradeId: 5, classId: 10 },
   ];
 
   for (const student of studentData) {
@@ -187,7 +187,7 @@ async function main() {
 
   // 8. LESSON (10 records)
   console.log("Creating lessons...");
-  const lessonDays = [Day.MONDAY, Day.TUESDAY, Day.WEDNESDAY, Day.THURSDAY, Day.FRIDAY, Day.MONDAY, Day.TUESDAY, Day.WEDNESDAY, Day.THURSDAY, Day.FRIDAY];
+  const lessonDays = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"];
   const lessonNames = [
     "Mathematics - Algebra Basics",
     "Science - Introduction to Physics",
@@ -468,9 +468,9 @@ async function main() {
 
   // 15. PAYMENT (10 records)
   console.log("Creating payments...");
-  const paymentTypes = [PaymentType.TUITION, PaymentType.EXAM, PaymentType.TRANSPORT, PaymentType.LIBRARY, PaymentType.OTHER];
-  const paymentMethods = [PaymentMethod.CASH, PaymentMethod.BANK_TRANSFER, PaymentMethod.CHECK, PaymentMethod.ONLINE];
-  const paymentStatuses = [PaymentStatus.PENDING, PaymentStatus.PAID, PaymentStatus.OVERDUE];
+  const paymentTypes = ["TUITION", "EXAM", "TRANSPORT", "LIBRARY", "OTHER"];
+  const paymentMethods = ["CASH", "BANK_TRANSFER", "CHECK", "ONLINE"];
+  const paymentStatuses = ["PENDING", "PAID", "OVERDUE"];
   
   for (let i = 1; i <= 10; i++) {
     await prisma.payment.upsert({
@@ -497,7 +497,30 @@ async function main() {
     });
   }
 
-  // 16. MESSAGES (10 records)
+  // 16. USERS (10 records) - For messaging system
+  console.log("Creating users for messaging...");
+  const userData = [
+    { id: "user1", username: "user1", name: "Rajesh", surname: "Kumar", email: "rajesh.kumar@user.com", phone: "9876543201", role: "TEACHER" },
+    { id: "user2", username: "user2", name: "Priya", surname: "Sharma", email: "priya.sharma@user.com", phone: "9876543202", role: "TEACHER" },
+    { id: "user3", username: "user3", name: "Amit", surname: "Patel", email: "amit.patel@user.com", phone: "9876543203", role: "TEACHER" },
+    { id: "user4", username: "user4", name: "Neha", surname: "Singh", email: "neha.singh@user.com", phone: "9876543204", role: "TEACHER" },
+    { id: "user5", username: "user5", name: "Vikram", surname: "Malhotra", email: "vikram.malhotra@user.com", phone: "9876543205", role: "TEACHER" },
+    { id: "user6", username: "user6", name: "Aditya", surname: "Kumar", email: "aditya.kumar@user.com", phone: "9876543206", role: "STUDENT" },
+    { id: "user7", username: "user7", name: "Aisha", surname: "Sharma", email: "aisha.sharma@user.com", phone: "9876543207", role: "STUDENT" },
+    { id: "user8", username: "user8", name: "Rahul", surname: "Patel", email: "rahul.patel@user.com", phone: "9876543208", role: "STUDENT" },
+    { id: "user9", username: "user9", name: "Zara", surname: "Singh", email: "zara.singh@user.com", phone: "9876543209", role: "STUDENT" },
+    { id: "user10", username: "user10", name: "Vivaan", surname: "Malhotra", email: "vivaan.malhotra@user.com", phone: "9876543210", role: "STUDENT" },
+  ];
+
+  for (const user of userData) {
+    await prisma.user.upsert({
+      where: { id: user.id },
+      update: user,
+      create: user,
+    });
+  }
+
+  // 17. MESSAGES (10 records)
   console.log("Creating messages...");
   const messageTitles = [
     "Welcome to New Academic Year",
@@ -532,14 +555,14 @@ async function main() {
         title: messageTitles[i - 1],
         content: messageContents[i - 1],
         date: new Date(new Date().setDate(new Date().getDate() - i)),
-        senderId: `teacher${i}`,
+        senderId: `user${i}`,
       },
       create: {
         id: i,
         title: messageTitles[i - 1],
         content: messageContents[i - 1],
         date: new Date(new Date().setDate(new Date().getDate() - i)),
-        senderId: `teacher${i}`,
+        senderId: `user${i}`,
       },
     });
 
@@ -548,42 +571,22 @@ async function main() {
       where: { id: i },
       update: {
         messageId: i,
-        recipientId: `student${i}`,
+        recipientId: `user${Math.min(i + 5, 10)}`, // Use students as recipients, ensure valid ID
         isRead: i % 2 === 0,
         readAt: i % 2 === 0 ? new Date() : null,
       },
       create: {
         id: i,
         messageId: i,
-        recipientId: `student${i}`,
+        recipientId: `user${Math.min(i + 5, 10)}`, // Use students as recipients, ensure valid ID
         isRead: i % 2 === 0,
         readAt: i % 2 === 0 ? new Date() : null,
       },
     });
   }
 
-  // 17. USERS (10 records) - For messaging system
-  console.log("Creating users for messaging...");
-  const userData = [
-    { id: "user1", username: "user1", name: "Rajesh", surname: "Kumar", email: "rajesh.kumar@user.com", phone: "9876543201", role: UserRole.TEACHER },
-    { id: "user2", username: "user2", name: "Priya", surname: "Sharma", email: "priya.sharma@user.com", phone: "9876543202", role: UserRole.TEACHER },
-    { id: "user3", username: "user3", name: "Amit", surname: "Patel", email: "amit.patel@user.com", phone: "9876543203", role: UserRole.TEACHER },
-    { id: "user4", username: "user4", name: "Neha", surname: "Singh", email: "neha.singh@user.com", phone: "9876543204", role: UserRole.TEACHER },
-    { id: "user5", username: "user5", name: "Vikram", surname: "Malhotra", email: "vikram.malhotra@user.com", phone: "9876543205", role: UserRole.TEACHER },
-    { id: "user6", username: "user6", name: "Aditya", surname: "Kumar", email: "aditya.kumar@user.com", phone: "9876543206", role: UserRole.STUDENT },
-    { id: "user7", username: "user7", name: "Aisha", surname: "Sharma", email: "aisha.sharma@user.com", phone: "9876543207", role: UserRole.STUDENT },
-    { id: "user8", username: "user8", name: "Rahul", surname: "Patel", email: "rahul.patel@user.com", phone: "9876543208", role: UserRole.STUDENT },
-    { id: "user9", username: "user9", name: "Zara", surname: "Singh", email: "zara.singh@user.com", phone: "9876543209", role: UserRole.STUDENT },
-    { id: "user10", username: "user10", name: "Vivaan", surname: "Malhotra", email: "vivaan.malhotra@user.com", phone: "9876543210", role: UserRole.STUDENT },
-  ];
-
-  for (const user of userData) {
-    await prisma.user.upsert({
-      where: { id: user.id },
-      update: user,
-      create: user,
-    });
-  }
+  // 18. FINANCIAL (10 records)
+  console.log("Creating financial records...");
 
   // 18. FINANCIAL (10 records)
   console.log("Creating financial records...");

@@ -19,206 +19,313 @@ export async function POST(request: NextRequest) {
     // Run the seed function directly
     console.log("Running seed function...");
     
-    // ADMIN
-    await prisma.admin.create({
-      data: {
-        id: "admin1",
-        username: "admin1",
-        password: "Dayesh@123",
-      },
-    });
-    await prisma.admin.create({
-      data: {
-        id: "admin2",
-        username: "admin2",
-        password: "Dayesh@123",
-      },
-    });
+    // 1. ADMIN (10 records)
+    console.log("Creating admins...");
+    const adminData = [
+      { id: "admin1", username: "admin1", password: "Dayesh@123" },
+      { id: "admin2", username: "admin2", password: "Dayesh@123" },
+      { id: "admin3", username: "admin3", password: "Dayesh@123" },
+      { id: "admin4", username: "admin4", password: "Dayesh@123" },
+      { id: "admin5", username: "admin5", password: "Dayesh@123" },
+      { id: "admin6", username: "admin6", password: "Dayesh@123" },
+      { id: "admin7", username: "admin7", password: "Dayesh@123" },
+      { id: "admin8", username: "admin8", password: "Dayesh@123" },
+      { id: "admin9", username: "admin9", password: "Dayesh@123" },
+      { id: "admin10", username: "admin10", password: "Dayesh@123" },
+    ];
 
-    // GRADE
-    for (let i = 1; i <= 6; i++) {
-      await prisma.grade.create({
-        data: {
-          level: i,
+    for (const admin of adminData) {
+      await prisma.admin.upsert({
+        where: { id: admin.id },
+        update: admin,
+        create: admin,
+      });
+    }
+
+    // 2. GRADE (10 records)
+    console.log("Creating grades...");
+    for (let i = 1; i <= 10; i++) {
+      await prisma.grade.upsert({
+        where: { id: i },
+        update: { level: i },
+        create: { id: i, level: i },
+      });
+    }
+
+    // 3. CLASS (10 records)
+    console.log("Creating classes...");
+    const classNames = ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B", "5A", "5B"];
+    for (let i = 1; i <= 10; i++) {
+      await prisma.class.upsert({
+        where: { id: i },
+        update: {
+          name: classNames[i - 1],
+          gradeId: Math.ceil(i / 2),
+          capacity: 25,
+        },
+        create: {
+          id: i,
+          name: classNames[i - 1],
+          gradeId: Math.ceil(i / 2),
+          capacity: 25,
         },
       });
     }
 
-    // CLASS
-    for (let i = 1; i <= 6; i++) {
-      await prisma.class.create({
-        data: {
-          name: `${i}A`, 
-          gradeId: i, 
-          capacity: Math.floor(Math.random() * (20 - 15 + 1)) + 15,
-        },
-      });
-    }
-
-    // SUBJECT
+    // 4. SUBJECT (10 records)
+    console.log("Creating subjects...");
     const subjectData = [
-      { name: "Mathematics" },
-      { name: "Science" },
-      { name: "English" },
-      { name: "History" },
-      { name: "Geography" },
-      { name: "Physics" },
-      { name: "Chemistry" },
-      { name: "Biology" },
-      { name: "Computer Science" },
-      { name: "Art" },
+      { id: 1, name: "Mathematics" },
+      { id: 2, name: "Science" },
+      { id: 3, name: "English" },
+      { id: 4, name: "History" },
+      { id: 5, name: "Geography" },
+      { id: 6, name: "Physics" },
+      { id: 7, name: "Chemistry" },
+      { id: 8, name: "Biology" },
+      { id: 9, name: "Computer Science" },
+      { id: 10, name: "Art" },
     ];
 
     for (const subject of subjectData) {
-      await prisma.subject.create({ data: subject });
+      await prisma.subject.upsert({
+        where: { id: subject.id },
+        update: subject,
+        create: subject,
+      });
     }
 
-    // TEACHER
-    for (let i = 1; i <= 15; i++) {
-      await prisma.teacher.create({
-        data: {
-          id: `teacher${i}`,
-          username: `teacher${i}`,
+    // 5. TEACHER (10 records)
+    console.log("Creating teachers...");
+    const teacherData = [
+      { id: "teacher1", username: "teacher1", name: "Rajesh", surname: "Kumar", email: "rajesh.kumar@school.com", phone: "9876543210", address: "123 MG Road, Bangalore", bloodType: "A+", sex: UserSex.MALE },
+      { id: "teacher2", username: "teacher2", name: "Priya", surname: "Sharma", email: "priya.sharma@school.com", phone: "9876543211", address: "456 Indira Nagar, Delhi", bloodType: "B+", sex: UserSex.FEMALE },
+      { id: "teacher3", username: "teacher3", name: "Amit", surname: "Patel", email: "amit.patel@school.com", phone: "9876543212", address: "789 Andheri West, Mumbai", bloodType: "O+", sex: UserSex.MALE },
+      { id: "teacher4", username: "teacher4", name: "Neha", surname: "Singh", email: "neha.singh@school.com", phone: "9876543213", address: "321 Koramangala, Bangalore", bloodType: "AB+", sex: UserSex.FEMALE },
+      { id: "teacher5", username: "teacher5", name: "Vikram", surname: "Malhotra", email: "vikram.malhotra@school.com", phone: "9876543214", address: "654 Bandra East, Mumbai", bloodType: "A-", sex: UserSex.MALE },
+      { id: "teacher6", username: "teacher6", name: "Anjali", surname: "Gupta", email: "anjali.gupta@school.com", phone: "9876543215", address: "987 Defence Colony, Delhi", bloodType: "B-", sex: UserSex.FEMALE },
+      { id: "teacher7", username: "teacher7", name: "Suresh", surname: "Reddy", email: "suresh.reddy@school.com", phone: "9876543216", address: "147 Banjara Hills, Hyderabad", bloodType: "O-", sex: UserSex.MALE },
+      { id: "teacher8", username: "teacher8", name: "Kavita", surname: "Verma", email: "kavita.verma@school.com", phone: "9876543217", address: "258 Vasant Vihar, Delhi", bloodType: "AB-", sex: UserSex.FEMALE },
+      { id: "teacher9", username: "teacher9", name: "Arun", surname: "Joshi", email: "arun.joshi@school.com", phone: "9876543218", address: "369 JP Nagar, Bangalore", bloodType: "A+", sex: UserSex.MALE },
+      { id: "teacher10", username: "teacher10", name: "Meera", surname: "Kapoor", email: "meera.kapoor@school.com", phone: "9876543219", address: "741 Powai, Mumbai", bloodType: "B+", sex: UserSex.FEMALE },
+    ];
+
+    for (const teacher of teacherData) {
+      await prisma.teacher.upsert({
+        where: { id: teacher.id },
+        update: {
+          ...teacher,
           password: "Dayesh@123",
-          name: `TName${i}`,
-          surname: `TSurname${i}`,
-          email: `teacher${i}@gamil.com`,
-          phone: `776056306${i}`,
-          address: `Address${i}`,
-          bloodType: "A+",
-          sex: i % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
-          subjects: { connect: [{ id: (i % 10) + 1 }] }, 
-          classes: { connect: [{ id: (i % 6) + 1 }] }, 
+          subjects: { connect: [{ id: (parseInt(teacher.id.replace('teacher', '')) % 10) + 1 }] },
+          classes: { connect: [{ id: (parseInt(teacher.id.replace('teacher', '')) % 10) + 1 }] },
+          birthday: new Date(new Date().setFullYear(new Date().getFullYear() - 30)),
+        },
+        create: {
+          ...teacher,
+          password: "Dayesh@123",
+          subjects: { connect: [{ id: (parseInt(teacher.id.replace('teacher', '')) % 10) + 1 }] },
+          classes: { connect: [{ id: (parseInt(teacher.id.replace('teacher', '')) % 10) + 1 }] },
           birthday: new Date(new Date().setFullYear(new Date().getFullYear() - 30)),
         },
       });
     }
 
-    // PARENT
-    for (let i = 1; i <= 25; i++) {
-      await prisma.parent.create({
-        data: {
-          id: `parentId${i}`,
-          username: `parentId${i}`,
-          password: "Dayesh@123",
-          name: `PName ${i}`,
-          surname: `PSurname ${i}`,
-          email: `parent${i}@example.com`,
-          phone: `123-456-789${i}`,
-          address: `Address${i}`,
-        },
+    // 6. PARENT (10 records)
+    console.log("Creating parents...");
+    const parentData = [
+      { id: "parent1", username: "parent1", name: "Ramesh", surname: "Kumar", email: "ramesh.kumar@email.com", phone: "8765432109", address: "100 MG Road, Bangalore" },
+      { id: "parent2", username: "parent2", name: "Sunita", surname: "Sharma", email: "sunita.sharma@email.com", phone: "8765432108", address: "200 Indira Nagar, Delhi" },
+      { id: "parent3", username: "parent3", name: "Mohan", surname: "Patel", email: "mohan.patel@email.com", phone: "8765432107", address: "300 Andheri West, Mumbai" },
+      { id: "parent4", username: "parent4", name: "Reena", surname: "Singh", email: "reena.singh@email.com", phone: "8765432106", address: "400 Koramangala, Bangalore" },
+      { id: "parent5", username: "parent5", name: "Sanjay", surname: "Malhotra", email: "sanjay.malhotra@email.com", phone: "8765432105", address: "500 Bandra East, Mumbai" },
+      { id: "parent6", username: "parent6", name: "Lakshmi", surname: "Gupta", email: "lakshmi.gupta@email.com", phone: "8765432104", address: "600 Defence Colony, Delhi" },
+      { id: "parent7", username: "parent7", name: "Krishna", surname: "Reddy", email: "krishna.reddy@email.com", phone: "8765432103", address: "700 Banjara Hills, Hyderabad" },
+      { id: "parent8", username: "parent8", name: "Geeta", surname: "Verma", email: "geeta.verma@email.com", phone: "8765432102", address: "800 Vasant Vihar, Delhi" },
+      { id: "parent9", username: "parent9", name: "Prakash", surname: "Joshi", email: "prakash.joshi@email.com", phone: "8765432101", address: "900 JP Nagar, Bangalore" },
+      { id: "parent10", username: "parent10", name: "Sita", surname: "Kapoor", email: "sita.kapoor@email.com", phone: "8765432100", address: "1000 Powai, Mumbai" },
+    ];
+
+    for (const parent of parentData) {
+      await prisma.parent.upsert({
+        where: { id: parent.id },
+        update: { ...parent, password: "Dayesh@123" },
+        create: { ...parent, password: "Dayesh@123" },
       });
     }
 
-    // STUDENT
-    for (let i = 1; i <= 50; i++) {
-      await prisma.student.create({
-        data: {
-          id: `student${i}`, 
-          username: `student${i}`, 
-          password: "Dayesh@123",
-          name: `SName${i}`,
-          surname: `SSurname ${i}`,
-          email: `student${i}@example.com`,
-          phone: `987-654-321${i}`,
-          address: `Address${i}`,
-          bloodType: "O-",
-          sex: i % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
-          parentId: `parentId${Math.ceil(i / 2) % 25 || 25}`, 
-          gradeId: (i % 6) + 1, 
-          classId: (i % 6) + 1, 
-          birthday: new Date(new Date().setFullYear(new Date().getFullYear() - 10)),
-        },
-      }); 
-    }
+    // 7. STUDENT (10 records)
+    console.log("Creating students...");
+    const studentData = [
+      { id: "student1", username: "student1", name: "Aditya", surname: "Kumar", email: "aditya.kumar@student.com", phone: "7654321098", address: "101 MG Road, Bangalore", bloodType: "A+", sex: UserSex.MALE, parentId: "parent1", gradeId: 1, classId: 1 },
+      { id: "student2", username: "student2", name: "Aisha", surname: "Sharma", email: "aisha.sharma@student.com", phone: "7654321097", address: "102 Indira Nagar, Delhi", bloodType: "B+", sex: UserSex.FEMALE, parentId: "parent2", gradeId: 1, classId: 2 },
+      { id: "student3", username: "student3", name: "Rahul", surname: "Patel", email: "rahul.patel@student.com", phone: "7654321096", address: "103 Andheri West, Mumbai", bloodType: "O+", sex: UserSex.MALE, parentId: "parent3", gradeId: 2, classId: 3 },
+      { id: "student4", username: "student4", name: "Zara", surname: "Singh", email: "zara.singh@student.com", phone: "7654321095", address: "104 Koramangala, Bangalore", bloodType: "AB+", sex: UserSex.FEMALE, parentId: "parent4", gradeId: 2, classId: 4 },
+      { id: "student5", username: "student5", name: "Vivaan", surname: "Malhotra", email: "vivaan.malhotra@student.com", phone: "7654321094", address: "105 Bandra East, Mumbai", bloodType: "A-", sex: UserSex.MALE, parentId: "parent5", gradeId: 3, classId: 5 },
+      { id: "student6", username: "student6", name: "Diya", surname: "Gupta", email: "diya.gupta@student.com", phone: "7654321093", address: "106 Defence Colony, Delhi", bloodType: "B-", sex: UserSex.FEMALE, parentId: "parent6", gradeId: 3, classId: 6 },
+      { id: "student7", username: "student7", name: "Arjun", surname: "Reddy", email: "arjun.reddy@student.com", phone: "7654321092", address: "107 Banjara Hills, Hyderabad", bloodType: "O-", sex: UserSex.MALE, parentId: "parent7", gradeId: 4, classId: 7 },
+      { id: "student8", username: "student8", name: "Kiara", surname: "Verma", email: "kiara.verma@student.com", phone: "7654321091", address: "108 Vasant Vihar, Delhi", bloodType: "AB-", sex: UserSex.FEMALE, parentId: "parent8", gradeId: 4, classId: 8 },
+      { id: "student9", username: "student9", name: "Shaurya", surname: "Joshi", email: "shaurya.joshi@student.com", phone: "7654321090", address: "109 JP Nagar, Bangalore", bloodType: "A+", sex: UserSex.MALE, parentId: "parent9", gradeId: 5, classId: 9 },
+      { id: "student10", username: "student10", name: "Anaya", surname: "Kapoor", email: "anaya.kapoor@student.com", phone: "7654321089", address: "110 Powai, Mumbai", bloodType: "B+", sex: UserSex.FEMALE, parentId: "parent10", gradeId: 5, classId: 10 },
+    ];
 
-    // LESSON
-    for (let i = 1; i <= 30; i++) {
-      await prisma.lesson.create({
-        data: {
-          name: `Lesson${i}`, 
-          day: Day[
-            Object.keys(Day)[
-              Math.floor(Math.random() * Object.keys(Day).length)
-            ] as keyof typeof Day
-          ], 
-          startTime: new Date(new Date().setHours(new Date().getHours() + 1)), 
-          endTime: new Date(new Date().setHours(new Date().getHours() + 3)), 
-          subjectId: (i % 10) + 1, 
-          classId: (i % 6) + 1, 
-          teacherId: `teacher${(i % 15) + 1}`, 
-        },
+    for (const student of studentData) {
+      await prisma.student.upsert({
+        where: { id: student.id },
+        update: { ...student, password: "Dayesh@123", birthday: new Date(new Date().setFullYear(new Date().getFullYear() - 10)) },
+        create: { ...student, password: "Dayesh@123", birthday: new Date(new Date().setFullYear(new Date().getFullYear() - 10)) },
       });
     }
 
-    // EXAM
+    // 8. LESSON (10 records)
+    console.log("Creating lessons...");
+    const lessonDays = [Day.MONDAY, Day.TUESDAY, Day.WEDNESDAY, Day.THURSDAY, Day.FRIDAY, Day.MONDAY, Day.TUESDAY, Day.WEDNESDAY, Day.THURSDAY, Day.FRIDAY];
     for (let i = 1; i <= 10; i++) {
-      await prisma.exam.create({
-        data: {
-          title: `Exam ${i}`, 
-          startTime: new Date(new Date().setHours(new Date().getHours() + 1)), 
-          endTime: new Date(new Date().setHours(new Date().getHours() + 2)), 
-          lessonId: (i % 30) + 1, 
+      await prisma.lesson.upsert({
+        where: { id: i },
+        update: {
+          name: `Lesson ${i}`,
+          day: lessonDays[i - 1],
+          startTime: new Date(new Date().setHours(8 + i, 0, 0, 0)),
+          endTime: new Date(new Date().setHours(9 + i, 0, 0, 0)),
+          subjectId: i,
+          classId: i,
+          teacherId: `teacher${i}`,
+        },
+        create: {
+          id: i,
+          name: `Lesson ${i}`,
+          day: lessonDays[i - 1],
+          startTime: new Date(new Date().setHours(8 + i, 0, 0, 0)),
+          endTime: new Date(new Date().setHours(9 + i, 0, 0, 0)),
+          subjectId: i,
+          classId: i,
+          teacherId: `teacher${i}`,
         },
       });
     }
 
-    // ASSIGNMENT
+    // 9. EXAM (10 records)
+    console.log("Creating exams...");
     for (let i = 1; i <= 10; i++) {
-      await prisma.assignment.create({
-        data: {
-          title: `Assignment ${i}`, 
-          startDate: new Date(new Date().setHours(new Date().getHours() + 1)), 
-          dueDate: new Date(new Date().setDate(new Date().getDate() + 1)), 
-          lessonId: (i % 30) + 1, 
+      await prisma.exam.upsert({
+        where: { id: i },
+        update: {
+          title: `Exam ${i}`,
+          startTime: new Date(new Date().setDate(new Date().getDate() + i)),
+          endTime: new Date(new Date().setDate(new Date().getDate() + i + 1)),
+          lessonId: i,
+        },
+        create: {
+          id: i,
+          title: `Exam ${i}`,
+          startTime: new Date(new Date().setDate(new Date().getDate() + i)),
+          endTime: new Date(new Date().setDate(new Date().getDate() + i + 1)),
+          lessonId: i,
         },
       });
     }
 
-    // RESULT
+    // 10. ASSIGNMENT (10 records)
+    console.log("Creating assignments...");
     for (let i = 1; i <= 10; i++) {
-      await prisma.result.create({
-        data: {
-          score: 90, 
-          studentId: `student${i}`, 
-          ...(i <= 5 ? { examId: i } : { assignmentId: i - 5 }), 
+      await prisma.assignment.upsert({
+        where: { id: i },
+        update: {
+          title: `Assignment ${i}`,
+          startDate: new Date(new Date().setDate(new Date().getDate() + i)),
+          dueDate: new Date(new Date().setDate(new Date().getDate() + i + 7)),
+          lessonId: i,
+        },
+        create: {
+          id: i,
+          title: `Assignment ${i}`,
+          startDate: new Date(new Date().setDate(new Date().getDate() + i)),
+          dueDate: new Date(new Date().setDate(new Date().getDate() + i + 7)),
+          lessonId: i,
         },
       });
     }
 
-    // ATTENDANCE
+    // 11. RESULT (10 records)
+    console.log("Creating results...");
     for (let i = 1; i <= 10; i++) {
-      await prisma.attendance.create({
-        data: {
-          date: new Date(), 
-          present: true, 
-          studentId: `student${i}`, 
-          lessonId: (i % 30) + 1, 
+      await prisma.result.upsert({
+        where: { id: i },
+        update: {
+          score: 85 + (i * 2), // Scores from 87 to 105
+          studentId: `student${i}`,
+          examId: i,
+        },
+        create: {
+          id: i,
+          score: 85 + (i * 2),
+          studentId: `student${i}`,
+          examId: i,
         },
       });
     }
 
-    // EVENT
-    for (let i = 1; i <= 5; i++) {
-      await prisma.event.create({
-        data: {
-          title: `Event ${i}`, 
-          description: `Description for Event ${i}`, 
-          startTime: new Date(new Date().setHours(new Date().getHours() + 1)), 
-          endTime: new Date(new Date().setHours(new Date().getHours() + 2)), 
-          classId: (i % 5) + 1, 
+    // 12. ATTENDANCE (10 records)
+    console.log("Creating attendance records...");
+    for (let i = 1; i <= 10; i++) {
+      await prisma.attendance.upsert({
+        where: { id: i },
+        update: {
+          date: new Date(new Date().setDate(new Date().getDate() - i)),
+          present: i % 2 === 0, // Alternate present/absent
+          studentId: `student${i}`,
+          lessonId: i,
+        },
+        create: {
+          id: i,
+          date: new Date(new Date().setDate(new Date().getDate() - i)),
+          present: i % 2 === 0,
+          studentId: `student${i}`,
+          lessonId: i,
         },
       });
     }
 
-    // ANNOUNCEMENT
-    for (let i = 1; i <= 5; i++) {
-      await prisma.announcement.create({
-        data: {
-          title: `Announcement ${i}`, 
-          description: `Description for Announcement ${i}`, 
-          date: new Date(), 
-          classId: (i % 5) + 1, 
+    // 13. EVENT (10 records)
+    console.log("Creating events...");
+    for (let i = 1; i <= 10; i++) {
+      await prisma.event.upsert({
+        where: { id: i },
+        update: {
+          title: `Event ${i}`,
+          description: `Description for Event ${i}`,
+          startTime: new Date(new Date().setDate(new Date().getDate() + i + 10)),
+          endTime: new Date(new Date().setDate(new Date().getDate() + i + 11)),
+          classId: i,
+        },
+        create: {
+          id: i,
+          title: `Event ${i}`,
+          description: `Description for Event ${i}`,
+          startTime: new Date(new Date().setDate(new Date().getDate() + i + 10)),
+          endTime: new Date(new Date().setDate(new Date().getDate() + i + 11)),
+          classId: i,
+        },
+      });
+    }
+
+    // 14. ANNOUNCEMENT (10 records)
+    console.log("Creating announcements...");
+    for (let i = 1; i <= 10; i++) {
+      await prisma.announcement.upsert({
+        where: { id: i },
+        update: {
+          title: `Announcement ${i}`,
+          description: `Description for Announcement ${i}`,
+          date: new Date(new Date().setDate(new Date().getDate() - i)),
+          classId: i,
+        },
+        create: {
+          id: i,
+          title: `Announcement ${i}`,
+          description: `Description for Announcement ${i}`,
+          date: new Date(new Date().setDate(new Date().getDate() - i)),
+          classId: i,
         },
       });
     }

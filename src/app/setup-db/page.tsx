@@ -7,7 +7,7 @@ export default function SetupDBPage() {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const setupDatabase = async () => {
+  const setupDatabase = async (force = false) => {
     setIsLoading(true);
     setError(null);
     setResult(null);
@@ -18,6 +18,7 @@ export default function SetupDBPage() {
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ force }),
       });
 
       const data = await response.json();
@@ -43,13 +44,23 @@ export default function SetupDBPage() {
           This will set up your database with initial data including admin users, students, teachers, and other sample data.
         </p>
         
-        <button
-          onClick={setupDatabase}
-          disabled={isLoading}
-          className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-        >
-          {isLoading ? 'Setting up database...' : 'Setup Database'}
-        </button>
+        <div className="space-y-3">
+          <button
+            onClick={() => setupDatabase(false)}
+            disabled={isLoading}
+            className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed mr-3"
+          >
+            {isLoading ? 'Setting up database...' : 'Setup Database'}
+          </button>
+          
+          <button
+            onClick={() => setupDatabase(true)}
+            disabled={isLoading}
+            className="px-6 py-3 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
+            {isLoading ? 'Force Re-seeding...' : 'Force Re-seed (Overwrite)'}
+          </button>
+        </div>
 
         {isLoading && (
           <div className="mt-4 p-4 bg-blue-50 rounded border border-blue-200">

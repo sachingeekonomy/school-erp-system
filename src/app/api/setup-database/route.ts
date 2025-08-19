@@ -6,15 +6,29 @@ export async function POST(request: NextRequest) {
   try {
     console.log("Starting database setup...");
     
-    // First, let's check if data already exists
-    const adminCount = await prisma.admin.count();
-    if (adminCount > 0) {
-      return NextResponse.json({
-        success: true,
-        message: "Database already has data",
-        adminCount,
-      });
+    // Check if we should force re-seed
+    const { force } = await request.json().catch(() => ({}));
+    
+    // Check if data already exists (only if not forcing)
+    if (!force) {
+      const adminCount = await prisma.admin.count();
+      const teacherCount = await prisma.teacher.count();
+      const studentCount = await prisma.student.count();
+      
+      if (adminCount > 0 && teacherCount > 0 && studentCount > 0) {
+        return NextResponse.json({
+          success: true,
+          message: "Database already has complete data",
+          counts: {
+            admins: adminCount,
+            teachers: teacherCount,
+            students: studentCount,
+          },
+        });
+      }
     }
+    
+    console.log("Proceeding with database seeding...");
 
     // Run the seed function directly
     console.log("Running seed function...");

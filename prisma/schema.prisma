@@ -9,6 +9,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
   // For Vercel deployment, ensure DATABASE_URL is set in environment variables
+  // Format: postgresql://username:password@host:port/database?sslmode=require
 }
 
 model Admin {

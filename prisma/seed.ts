@@ -314,22 +314,84 @@ async function main() {
 
   // 14. ANNOUNCEMENT (10 records)
   console.log("Creating announcements...");
-  for (let i = 1; i <= 10; i++) {
+  const announcementData = [
+    {
+      id: 1,
+      title: "Annual Sports Day 2025",
+      description: "Dear students and parents, we are excited to announce our Annual Sports Day will be held on 25th August 2025. All students from classes 1A to 5B are invited to participate. Please collect participation forms from your class teachers.",
+      date: new Date(new Date().setDate(new Date().getDate() - 1)),
+      classId: 1,
+    },
+    {
+      id: 2,
+      title: "Parent-Teacher Meeting Schedule",
+      description: "Parent-Teacher meetings for all classes will be conducted on 30th August 2025 from 2:00 PM to 5:00 PM. Please book your slots through the school portal. Attendance is mandatory for all parents.",
+      date: new Date(new Date().setDate(new Date().getDate() - 2)),
+      classId: 2,
+    },
+    {
+      id: 3,
+      title: "Science Exhibition Registration",
+      description: "Interested students can register for the Science Exhibition to be held on 15th September 2025. Projects should be innovative and environmentally friendly. Last date for registration: 5th September.",
+      date: new Date(new Date().setDate(new Date().getDate() - 3)),
+      classId: 3,
+    },
+    {
+      id: 4,
+      title: "Library Week Celebration",
+      description: "Library Week will be celebrated from 20th to 26th September 2025. Various activities like book reading, storytelling, and quiz competitions will be organized. Students are encouraged to participate actively.",
+      date: new Date(new Date().setDate(new Date().getDate() - 4)),
+      classId: 4,
+    },
+    {
+      id: 5,
+      title: "Mid-Term Examination Schedule",
+      description: "Mid-term examinations will commence from 1st October 2025. Detailed timetable will be shared by class teachers. Students are advised to start their preparations early and maintain regular attendance.",
+      date: new Date(new Date().setDate(new Date().getDate() - 5)),
+      classId: 5,
+    },
+    {
+      id: 6,
+      title: "Cultural Fest 2025",
+      description: "Our annual Cultural Fest 'VIBGYOR 2025' will be held on 10th October 2025. Students can participate in dance, music, drama, and art competitions. Registration forms available with respective subject teachers.",
+      date: new Date(new Date().setDate(new Date().getDate() - 6)),
+      classId: 6,
+    },
+    {
+      id: 7,
+      title: "Computer Lab Maintenance",
+      description: "Computer Lab will remain closed for maintenance from 12th to 15th October 2025. Computer Science classes will be rescheduled. Students will be informed about the new schedule by their teachers.",
+      date: new Date(new Date().setDate(new Date().getDate() - 7)),
+      classId: 7,
+    },
+    {
+      id: 8,
+      title: "Diwali Holiday Notice",
+      description: "School will remain closed for Diwali holidays from 20th to 25th October 2025. Classes will resume on 26th October 2025. Wishing all students and parents a happy and safe Diwali celebration.",
+      date: new Date(new Date().setDate(new Date().getDate() - 8)),
+      classId: 8,
+    },
+    {
+      id: 9,
+      title: "Mathematics Olympiad Registration",
+      description: "National Mathematics Olympiad registration is now open. Students from classes 3A to 5B can participate. Exam date: 15th November 2025. Registration fee: ₹500. Contact Mathematics department for details.",
+      date: new Date(new Date().setDate(new Date().getDate() - 9)),
+      classId: 9,
+    },
+    {
+      id: 10,
+      title: "Annual Day Preparations",
+      description: "Annual Day celebrations will be held on 20th December 2025. Students are requested to start preparing for cultural performances. Rehearsals will begin from 1st December. Parents are invited to attend the grand celebration.",
+      date: new Date(new Date().setDate(new Date().getDate() - 10)),
+      classId: 10,
+    },
+  ];
+
+  for (const announcement of announcementData) {
     await prisma.announcement.upsert({
-      where: { id: i },
-      update: {
-        title: `Announcement ${i}`,
-        description: `Description for Announcement ${i}`,
-        date: new Date(new Date().setDate(new Date().getDate() - i)),
-        classId: i,
-      },
-      create: {
-        id: i,
-        title: `Announcement ${i}`,
-        description: `Description for Announcement ${i}`,
-        date: new Date(new Date().setDate(new Date().getDate() - i)),
-        classId: i,
-      },
+      where: { id: announcement.id },
+      update: announcement,
+      create: announcement,
     });
   }
 
